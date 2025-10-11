@@ -1,6 +1,32 @@
 from tkinter import *
-
+import sqlite3
 #create table
+def createDB():
+    connector = sqlite3.connect("Quiz.db")
+    cursor = connector.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Questions(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Question TEXT NOT NULL,
+        Option_1 TEXT, 
+        Option_2 TEXT, 
+        Option_3 TEXT, 
+        Option_4 TEXT,
+        Correct_Answer TEXT NOT NULL 
+        )
+        """)
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Leaderboard(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL,
+        Score INTEGER 
+        )
+        """
+    )
+    connector.commit()
+    connector.close()
 
 def start_new(container):
     #Making container
@@ -72,6 +98,6 @@ def welcome_page():
     welc_Frame.tkraise()
     window.mainloop()
 
-
+createDB()
 welcome_page()
 
