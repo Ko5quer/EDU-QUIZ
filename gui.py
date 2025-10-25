@@ -1,32 +1,26 @@
 from tkinter import *
-import sqlite3
-#create table
-def createDB():
-    connector = sqlite3.connect("Quiz.db")
-    cursor = connector.cursor()
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS Questions(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Question TEXT NOT NULL,
-        Option_1 TEXT, 
-        Option_2 TEXT, 
-        Option_3 TEXT, 
-        Option_4 TEXT,
-        Correct_Answer TEXT NOT NULL 
-        )
-        """)
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS Leaderboard(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name TEXT NOT NULL,
-        Score INTEGER 
-        )
-        """
-    )
-    connector.commit()
-    connector.close()
+import socket 
+
+class Start_Connection():
+    def __init__(self):
+        self.server= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((socket.gethostname(),2000))
+        self.server.listen (5)
+        self.client, self.address = self.server.accept()
+
+
+    def close(self):
+        self.server.close()
+        self.client.close()
+
+    def receive(self):
+        data=self.client.recv(1024)
+        return data.decode()
+    
+    def send(self, message):
+        self.client.send(message.encode())
+
+    
 
 def start_new(container):
     #Making container
@@ -97,7 +91,5 @@ def welcome_page():
 
     welc_Frame.tkraise()
     window.mainloop()
-
-createDB()
 welcome_page()
 
